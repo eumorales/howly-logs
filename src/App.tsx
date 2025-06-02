@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Filter, ChevronDown, ChevronUp, Database } from "lucide-react"
+import { Filter, ChevronDown, ChevronUp, Database, AlertCircle } from "lucide-react"
 import LogsTable from "./components/LogsTable"
 import FilterPanel from "./components/FilterPanel"
 import type { Log, FilterOptions } from "./types"
@@ -11,6 +11,7 @@ import "./App.css"
 function App() {
   const [logs, setLogs] = useState<Log[]>([])
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [filters, setFilters] = useState<FilterOptions>({
     playerName: "",
     startDate: "",
@@ -25,11 +26,13 @@ function App() {
 
   const handleSearch = async () => {
     setLoading(true)
+    setError(null)
     try {
       const results = await fetchLogs(filters)
       setLogs(results)
     } catch (error) {
       console.error("Erro ao buscar logs:", error)
+      setError("Não foi possível conectar ao servidor. Verifique se o backend está rodando.")
     } finally {
       setLoading(false)
     }
@@ -53,7 +56,15 @@ function App() {
               {/* Logo do Servidor */}
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-lg flex items-center justify-center shadow-sm border border-gray-200">
-                  <img src="howly.png" alt="Logo do Servidor" className="w-6 h-6 sm:w-8 sm:h-8 pixelated" />
+                  <img
+                    src="howly.png"
+                    alt="Logo do Servidor"
+                    className="w-6 h-6 sm:w-8 sm:h-8 pixelated"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement
+                      target.src = "/placeholder.svg?height=32&width=32"
+                    }}
+                  />
                 </div>
                 <div>
                   <h1 className="text-lg sm:text-xl font-bold text-white">Howly</h1>
@@ -83,6 +94,26 @@ function App() {
       </header>
 
       <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8">
+        {/* Mensagem de erro */}
+        {error && (
+          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3">
+            <AlertCircle className="w-5 h-5 text-red-500 mt-0.5" />
+            <div>
+              <h3 className="font-medium text-red-800">Erro de conexão</h3>
+              <p className="text-red-700 text-sm mt-1">{error}</p>
+              <p className="text-red-600 text-sm mt-2">
+                Verifique se o servidor backend está rodando em http://localhost:3001
+              </p>
+              <button
+                onClick={handleSearch}
+                className="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded"
+              >
+                Tentar novamente
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Filter Panel */}
         {showFilters && (
           <div className="mb-6 sm:mb-8">
