@@ -40,3 +40,8 @@ npm start
 - **Ícones**: Lucide React
 - **API**: Express + MySQL
 - **Headas**: mc-heads.net API
+
+## 📃 `HowlyLogs`
+
+![image](https://github.com/user-attachments/assets/76f0e448-b506-40e2-bcb2-e3ab7080fb73)
+
