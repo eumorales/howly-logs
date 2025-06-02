@@ -1,5 +1,7 @@
 # Howly - Logs
 
+![image](https://github.com/user-attachments/assets/31d56b9a-eba2-4500-9573-8a3325813da2)
+
 Sistema  de visualização de logs do servidor howly.
 
 ## 🚀 Instalação
